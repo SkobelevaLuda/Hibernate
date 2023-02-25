@@ -60,7 +60,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
         return users;
     }
 
-
     @Override
     public void  updateById(Employee employee) {
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()){

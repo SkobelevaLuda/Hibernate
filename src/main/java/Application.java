@@ -5,39 +5,35 @@ import model.City;
 import model.Employee;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 public class Application {
     public static void main(String[] args) {
-        EmployeeDao employeeDao = (EmployeeDao) new Employee();
-        City kazan = new City(6,"Казань");
-        City podolsk = new City(7,"Подольск");
+        // Создаем объект класса ДАО
+        EmployeeDao employeeDao = new EmployeeDaoImpl();
 
-        employeeDao.create(new Employee("Марфа", "Васильева", "жен", 50, kazan))
-                .ifPresent(employee -> System.out.println("Добавлен сотрудник" +employee));
-        Optional<Employee> employeeOptional=employeeDao.create(new Employee
-                ("Иван", "Ванин", "муж", 40, podolsk));
-        //  System.out.println(employeeDAO.create(new Employee("Марфа","Васильева", "жен",55)));
+        Employee employee1 = new Employee("Маня", "Федотова","жен", 22);
+        // Создаем объект
+        employeeDao.create(employee1);
 
-        System.out.println("Все сотрудники");
-        employeeDao.readAll().forEach(System.out::println);
+        // Получаем объект по id
+        System.out.println(employeeDao.readById(2));
 
-        if (employeeOptional.isPresent()){
-            employeeDao.readById(employeeOptional.get().getId())
-                    .ifPresent(employee -> System.out.println("Найден сотрудник"+employee));
-        }
-        if (employeeOptional.isPresent()){
-            Employee employee = employeeOptional.get();
-            employee.setAge(25);
-            employee.setName("Ольга");
-            employeeDao.updateById(employee)
-                    .ifPresent(emp -> System.out.println("Обновленный сотрудник"+emp));
+        // Получаем полный список объектов
+        List<Employee> list = employeeDao.readAll();
+
+        for (Employee employee : list) {
+            System.out.println(employee);
         }
 
-        if (employeeOptional.isPresent()){
-            employeeDao.deleteById(employeeOptional.get().getId())
-                    .ifPresent(emp -> System.out.println(" Удаленный сотрудник"+emp));
-        }
+        Employee employee2 = new Employee("Коля", "Мишин", "муж", 41);
+
+        // Изменяем объект
+       // employeeDao.updateById(employee2);
+
+        // Удаляем объект
+       // employeeDao.deleteById(3);
 
     }
 

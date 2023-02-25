@@ -3,8 +3,8 @@ package dao;
 import model.Employee;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 
-import java.lang.module.Configuration;
 
 public class HibernateSessionFactoryUtil {
     private static SessionFactory sessionFactory;

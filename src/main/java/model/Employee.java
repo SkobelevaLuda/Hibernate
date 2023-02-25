@@ -5,7 +5,7 @@ import org.hibernate.annotations.Tables;
 import javax.persistence.*;
 import java.util.Objects;
 @Entity
-@Tables(name = "employee")
+@Table(name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
