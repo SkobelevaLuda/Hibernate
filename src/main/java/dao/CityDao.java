@@ -2,6 +2,6 @@ package dao;
 
 import java.util.Optional;
 
-public interface City {
-    Optional<City> findById(long id);
+public interface CityDao {
+    Optional<CityDao> findById(long id);
 }
