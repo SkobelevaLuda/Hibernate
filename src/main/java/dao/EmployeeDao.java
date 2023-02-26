@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface EmployeeDao {
 
-    void create(Employee employee);
+    Employee create(Employee employee);
 
-    Employee readById(long id);
+    Optional<Employee> readById(long id);
 
     List<Employee> readAll();
 
-    void updateById(Employee employee);
+    Employee updateById(Employee employee);
 
     void deleteById(Employee employee);
 }

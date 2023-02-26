@@ -6,13 +6,11 @@ import dao.HibernateSessionFactoryUtil;
 import model.Employee;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
+
+import static com.sun.tools.attach.VirtualMachine.list;
 
 public class EmployeeDaoImpl implements EmployeeDao {
     private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
@@ -26,35 +24,36 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private final CityDao cityDao = new CityDaoImpl();
 
     @Override
-    public void create(Employee employee) {
+    public Employee create(Employee employee) {
 
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Serializable id = session.save(employee);
-            employee = session.get(Employee.class, id);
-
+            Serializable createId = session.save(employee);
+            Employee createdEmployee = session.get(Employee.class, createId);
             transaction.commit();
+            return createdEmployee;
+        }
+    }
+    @Override
+    public Optional<Employee> readById(long id) {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            return Optional.ofNullable(session.get(Employee.class, id));
         }
     }
 
 
     @Override
-    public Employee readById(long id) {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Employee.class, id);
-    }
-
-
-    @Override
     public List<Employee> readAll() {
-        List<Employee> users = (List<Employee>) HibernateSessionFactoryUtil
-                .getSessionFactory().openSession().createQuery("From Employee").list();
-        return users;
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Employee ", Employee.class).list();
+        }
     }
 
     @Override
-    public void updateById(Employee employee) {
+    public Employee updateById(Employee employee) {
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+
             session.update(employee);
             transaction.commit();
 
