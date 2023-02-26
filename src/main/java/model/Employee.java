@@ -11,15 +11,15 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column( name = "name")
+    @Column( name = "name", nullable = false, length = 50)
     private String name;
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false, length = 50)
     private String surname;
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false, length = 50)
     private String gender;
     @Column(name = "age")
     private int age;
-
+    @Column(name = "city_id")
     private int city;
 
     public Employee(long id, String name, String surname, String gender, int age, int city) {

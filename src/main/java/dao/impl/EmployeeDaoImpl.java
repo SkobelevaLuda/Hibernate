@@ -3,18 +3,16 @@ package dao.impl;
 import dao.CityDao;
 import dao.EmployeeDao;
 import dao.HibernateSessionFactoryUtil;
-import jdbc.ConnectinManager;
-import model.City;
 import model.Employee;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
-import javax.transaction.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 public class EmployeeDaoImpl implements EmployeeDao {
     private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
@@ -30,19 +28,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public void create(Employee employee) {
 
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();) {
-            Transaction transaction = (Transaction) session.beginTransaction();
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            Serializable id = session.save(employee);
+            employee = session.get(Employee.class, id);
 
-            session.save(employee);
             transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -61,39 +52,24 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public void  updateById(Employee employee) {
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()){
-            Transaction transaction = (Transaction) session.beginTransaction();
+    public void updateById(Employee employee) {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.update(employee);
             transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
+
         }
     }
 
-    @Override
-    public void deleteById(long id) {
-        try(Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = (Transaction) session.beginTransaction();
+        @Override
+        public void deleteById ( Employee employee){
+            try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+                Transaction transaction = session.beginTransaction();
 
-            session.delete(id);
-            transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
+                session.delete(employee);
+                transaction.commit();
+            }
         }
-    }
 
     /*private Employee readEmployee(ResultSet resultSet) throws SQLException {
         Long cityId = resultSet.getObject("city_id", Long.class);
@@ -109,4 +85,4 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 city);
 
     }*/
-}
+    }
