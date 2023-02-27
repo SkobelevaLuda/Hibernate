@@ -1,5 +1,4 @@
 package dao.impl;
-import dao.CityDao;
 import dao.EmployeeDao;
 import dao.HibernateSessionFactoryUtil;
 import model.Employee;
@@ -7,9 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 public class EmployeeDaoImpl implements EmployeeDao {
    /* private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
@@ -29,20 +26,18 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }*/
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Serializable createdId = session.save(employee);
-            Employee createdEmployee = session.get(Employee.class, createdId);
+            //Serializable createdId = session.save(employee);
+            //Employee createdEmployee = session.get(Employee.class, createdId);
+            session.saveOrUpdate(employee);
             transaction.commit();
-            return createdEmployee;
+            return employee;
         }
     }
 
     @Override
-    public Optional<Employee> readById(long id) {
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
-            return Optional.ofNullable(session.get(Employee.class, id));
-        }
+    public Employee readById(Integer id) {
+        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Employee.class, id);
     }
-
 
     @Override
     public List<Employee> readAll() {
@@ -66,17 +61,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public Optional<Employee> deleteById(Employee employee) {
-        Optional<Employee> employeeOptional = readById(employee.getId());
-        if (employeeOptional.isPresent()){
-            try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
-                Transaction transaction = session.beginTransaction();
-                session.delete(employeeOptional.get());
-                transaction.commit();
-                return employeeOptional;
-            }
+    public void deleteById(Employee employee) {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.delete(employee);
+            transaction.commit();
         }
-        return Optional.empty();
     }
 
     /*private Employee readEmployee(ResultSet resultSet) throws SQLException {

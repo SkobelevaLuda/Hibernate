@@ -18,13 +18,13 @@ public class Employee {
     @Column(name = "age")
     private int age;
     @Column(name = "city_id")
-    private Long city;
+    private Integer city;
 
     public Employee(long id, String name, String surname, String gender, int age, int city) {
 
     }
 
-    public Employee(String name, String surname, String gender, int age, Long city) {
+    public Employee(String name, String surname, String gender, int age, Integer city) {
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -32,7 +32,7 @@ public class Employee {
         this.city = city;
     }
 
-    public Employee(String name, String surname, String gender, int age) {
+    public Employee(String name, String surname, String gender, Integer age) {
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -83,11 +83,11 @@ public class Employee {
         this.age = age;
     }
 
-    public Long getCity() {
+    public Integer getCity() {
         return city;
     }
 
-    public void setCity(Long city) {
+    public void setCity(Integer city) {
         this.city = city;
     }
 
