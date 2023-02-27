@@ -1,7 +1,5 @@
 package model;
 
-import org.hibernate.annotations.Tables;
-
 import javax.persistence.*;
 import java.util.Objects;
 @Entity
@@ -20,13 +18,13 @@ public class Employee {
     @Column(name = "age")
     private int age;
     @Column(name = "city_id")
-    private int city;
+    private Long city;
 
     public Employee(long id, String name, String surname, String gender, int age, int city) {
 
     }
 
-    public Employee(String name, String surname, String gender, int age, int city) {
+    public Employee(String name, String surname, String gender, int age, Long city) {
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -85,11 +83,11 @@ public class Employee {
         this.age = age;
     }
 
-    public int getCity() {
+    public Long getCity() {
         return city;
     }
 
-    public void setCity(int city) {
+    public void setCity(Long city) {
         this.city = city;
     }
 

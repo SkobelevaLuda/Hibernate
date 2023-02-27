@@ -3,22 +3,23 @@ import dao.EmployeeDao;
 import dao.impl.EmployeeDaoImpl;
 import model.City;
 import model.Employee;
-
-import java.sql.*;
 import java.util.List;
-import java.util.Optional;
 
 public class Application {
     public static void main(String[] args) {
-        // Создаем объект класса ДАО
-        EmployeeDao employeeDao = new EmployeeDaoImpl();
 
-        Employee employee1 = new Employee("Маня", "Федотова","жен", 22);
-        // Создаем объект
-        employeeDao.create(employee1);
+        EmployeeDao employeeDao = new EmployeeDaoImpl();
+        City tula= new City(3,"Тула");
+        City kaluga = new City(4, "Калуга");
+
+        Employee manua = employeeDao.create(new Employee("Маня", "Федотова","жен", 22, 3L));
+        System.out.println("Добавлен сотрудник" + manua);
+        Employee vika = employeeDao.create(new Employee("Вика", "Сидорова","жен", 25, 4L));
+        System.out.println("Добавлен сотрудник" + manua);;
+
 
         // Получаем объект по id
-        System.out.println(employeeDao.readById(2));
+        System.out.println(employeeDao.readById(1));
 
         // Получаем полный список объектов
         List<Employee> list = employeeDao.readAll();
