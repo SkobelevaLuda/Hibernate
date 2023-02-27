@@ -4,7 +4,6 @@ import dao.CityDao;
 import dao.HibernateSessionFactoryUtil;
 import model.City;
 import org.hibernate.Session;
-
 import java.util.Optional;
 
 public class CityDaoImpl implements CityDao {

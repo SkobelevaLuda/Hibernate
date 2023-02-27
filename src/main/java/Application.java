@@ -15,26 +15,24 @@ public class Application {
         Employee manua = employeeDao.create(new Employee("Маня", "Федотова","жен", 22, 3L));
         System.out.println("Добавлен сотрудник" + manua);
         Employee vika = employeeDao.create(new Employee("Вика", "Сидорова","жен", 25, 4L));
-        System.out.println("Добавлен сотрудник" + manua);;
+        System.out.println("Добавлен сотрудник" + vika);;
 
+        System.out.println( "Все сотрудники ");
+        employeeDao.readAll().forEach(System.out::println);
 
-        // Получаем объект по id
-        System.out.println(employeeDao.readById(1));
+        employeeDao.readById(vika.getId())
+                .ifPresent(employee -> System.out.println("Найден сотрудник " + employee));
 
-        // Получаем полный список объектов
-        List<Employee> list = employeeDao.readAll();
+        vika.setName("Катя");
+        vika.setAge(45);
+        vika.setCity(3L);
+        vika = employeeDao.updateById(vika);
+        System.out.println("Обновленный сотрудник " + vika);
 
-        for (Employee employee : list) {
-            System.out.println(employee);
-        }
+        employeeDao.deleteById(manua).ifPresent(employee -> System.out.println("Удаленный сотрудник: " +employee));
 
-        Employee employee2 = new Employee("Коля", "Мишин", "муж", 41);
-
-        // Изменяем объект
-       // employeeDao.updateById(employee2);
-
-        // Удаляем объект
-       // employeeDao.deleteById(3);
+        System.out.println("Все сотрудники");
+        employeeDao.readAll().forEach(System.out::println);
 
     }
 
