@@ -1,98 +1,71 @@
 package dao.impl;
-
-import dao.CityDao;
 import dao.EmployeeDao;
 import dao.HibernateSessionFactoryUtil;
-import jdbc.ConnectinManager;
-import model.City;
 import model.Employee;
 import org.hibernate.Session;
-
-import javax.transaction.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.hibernate.Transaction;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
-import java.util.Optional;
 
 public class EmployeeDaoImpl implements EmployeeDao {
-    private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
+   /* private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
             "VALUES (?, ?, ?, ?, ?)";
 
     private static final String FIND_LAST_EMPLOYEE = "SELECT * FROM employee ORDER BY id DESC LIMIT 1 ";
     private static final String FIND_BY_ID = "SELECT * FROM employee WHERE id = ? ";
     private static final String FIND_ALL = "SELECT * FROM employee ";
     private static final String UPDATE = "UPDATE employee SET name=?, surname = ?, gender= ?, age = ?, city_id = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM employee WHERE id = ?";
-    private final CityDao cityDao = new CityDaoImpl();
+    private static final String DELETE = "DELETE FROM employee WHERE id = ?";*/
+    //private final CityDao cityDao = new CityDaoImpl();
 
     @Override
-    public void create(Employee employee) {
-
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();) {
-            Transaction transaction = (Transaction) session.beginTransaction();
-
-            session.save(employee);
+    public Employee create(Employee employee) {
+        /*if (employee.getCity()!= null && cityDao.findById(employee.getCity()).isEmpty()){
+            employee.setCity(null);
+        }*/
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            //Serializable createdId = session.save(employee);
+            //Employee createdEmployee = session.get(Employee.class, createdId);
+            session.saveOrUpdate(employee);
             transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
+            return employee;
         }
     }
 
-
     @Override
-    public Employee readById(long id) {
+    public Employee readById(Integer id) {
         return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Employee.class, id);
     }
 
-
     @Override
     public List<Employee> readAll() {
-        List<Employee> users = (List<Employee>) HibernateSessionFactoryUtil
-                .getSessionFactory().openSession().createQuery("From Employee").list();
-        return users;
-    }
-
-
-    @Override
-    public void  updateById(Employee employee) {
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()){
-            Transaction transaction = (Transaction) session.beginTransaction();
-            session.update(employee);
-            transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Employee ",
+                    Employee.class).list();
         }
     }
+    @Override
+    public Employee updateById(Employee employee) {
+        /*if (employee.getCity()!= null && cityDao.findById(employee.getCity()).isEmpty()) {
+            employee.setCity(null);
+        }*/
+        EntityManager entityManager = HibernateSessionFactoryUtil.getSessionFactory()
+                .createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        Employee updateById = entityManager.merge(employee);
+        entityTransaction.commit();
+        return updateById;
+    }
 
     @Override
-    public void deleteById(long id) {
-        try(Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = (Transaction) session.beginTransaction();
-
-            session.delete(id);
+    public void deleteById(Employee employee) {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.delete(employee);
             transaction.commit();
-        } catch (HeuristicRollbackException e) {
-            throw new RuntimeException(e);
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException(e);
-        } catch (RollbackException e) {
-            throw new RuntimeException(e);
         }
     }
 

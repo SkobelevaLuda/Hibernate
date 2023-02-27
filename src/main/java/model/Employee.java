@@ -1,32 +1,30 @@
 package model;
 
-import org.hibernate.annotations.Tables;
-
 import javax.persistence.*;
 import java.util.Objects;
 @Entity
-@Tables(name = "employee")
+@Table(name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column( name = "name")
+    @Column( name = "name", nullable = false, length = 50)
     private String name;
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false, length = 50)
     private String surname;
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false, length = 50)
     private String gender;
     @Column(name = "age")
     private int age;
-
-    private int city;
+    @Column(name = "city_id")
+    private Integer city;
 
     public Employee(long id, String name, String surname, String gender, int age, int city) {
 
     }
 
-    public Employee(String name, String surname, String gender, int age, int city) {
+    public Employee(String name, String surname, String gender, int age, Integer city) {
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -34,7 +32,7 @@ public class Employee {
         this.city = city;
     }
 
-    public Employee(String name, String surname, String gender, int age) {
+    public Employee(String name, String surname, String gender, Integer age) {
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -85,11 +83,11 @@ public class Employee {
         this.age = age;
     }
 
-    public int getCity() {
+    public Integer getCity() {
         return city;
     }
 
-    public void setCity(int city) {
+    public void setCity(Integer city) {
         this.city = city;
     }
 

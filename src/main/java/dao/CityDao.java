@@ -1,7 +1,9 @@
 package dao;
 
+import model.City;
+
 import java.util.Optional;
 
 public interface CityDao {
-    Optional<CityDao> findById(long id);
+    Optional<City> findById(long id);
 }
